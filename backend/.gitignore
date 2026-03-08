@@ -1,0 +1,44 @@
+# Python
+*.py[cod]
+__pycache__/
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# Django
+*.log
+*.pot
+*.pyc
+*.pyo
+*.sqlite3     # local DB (use postgres or MySQL in production)
+db.sqlite3
+
+# Media files (uploaded images, docs, etc.)
+media/
+staticfiles/
+
+# Environment variables
+.env
+
+# Pytest
+.cache/
+.pytest_cache/
+
+# IDE/editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Coverage reports
+htmlcov/
+.coverage
+
+# Django migrations (optional: if you want to ignore migrations)
+# apps/**/migrations/
