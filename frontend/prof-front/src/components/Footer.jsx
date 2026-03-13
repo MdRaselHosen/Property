@@ -23,7 +23,7 @@ const Footer = () => {
             </Link>
           </li>
           <li className="list-inline-item ms-3">
-            <Link className="text-white text-decoration-none">
+            <Link className="text-white text-decoration-none" to="/login">
               Login
             </Link>
           </li>
