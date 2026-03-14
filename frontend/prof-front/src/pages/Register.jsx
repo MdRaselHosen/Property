@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from 'axios'
+import api from "../services/api";
 
 const Register = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         password: '',
-        confirmPassword:''
+        confirm_password:''
     });
     const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -19,24 +21,25 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (formData.password != formData.confirmPassword){
+        if (formData.password !== formData.confirm_password){
             alert('Passwords do not match');
             return;
         }
         try{
             setLoading(true);
             
-            const response = await axios.post('http://127.0.0.1:8000/api/register/',{
+            const response = await api.post('register/',{
                 name: formData.name,
                 email: formData.email,
                 password: formData.password,
+                confirm_password: formData.confirm_password
             });
             console.log('Registration success: ',response.data);
             alert('Registration successful');
             navigate('/login')
         }catch(error){
             console.error('Registration error: ', error.response?.data || error.message);
-            alert(error.response?.data?.message || 'Registrarion Failed');
+            alert(JSON.stringify(error.response?.data) || 'Registration Failed');
 
         }finally{
             setLoading(false);
@@ -93,14 +96,14 @@ const Register = () => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="confirmPassword" className="form-label">
+                  <label htmlFor="confirm_password" className="form-label">
                     Confirm Password
                   </label>
                   <input
                     type="password"
                     className="form-control"
-                    id="confirmPassword"
-                    name="confirmPassword"
+                    id="confirm_password"
+                    name="confirm_password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required
