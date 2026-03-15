@@ -1,7 +1,45 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import api from "../services/api";
 
 const Login = () => {
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    });
+
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]:value});
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setErrors({});
+
+        try{
+            setLoading(true);
+
+            const response = await api.post('user/login/', formData);
+            localStorage.setItem('access_token', response.data.access);
+            localStorage.setItem('refresh_token', response.data.refresh);
+            localStorage.setItem('user', JSON.stringify(response.data.user));
+
+            alert("Login Successful");
+            navigate('/')
+
+        }catch(error){
+            console.error(error.response?.data);
+            setErrors(error.response?.data || {});
+        }finally{
+            setLoading(false);
+        }
+    }
+
   return (
     <div className="container my-5">
       <div className="row justify-content-center">
@@ -9,7 +47,7 @@ const Login = () => {
           <div className="card shadow">
             <div className="card-body p-5">
               <h2 className="card-title text-center mb-4">Login</h2>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">
                     Email
@@ -19,6 +57,8 @@ const Login = () => {
                     className="form-control"
                     id="email"
                     name="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     required
                   />
                 </div>
@@ -31,6 +71,8 @@ const Login = () => {
                     className="form-control"
                     name="password"
                     id="password"
+                    value={formData.password}
+                    onChange={handleChange}
                     required
                   />
                 </div>

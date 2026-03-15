@@ -2,6 +2,8 @@ from rest_framework import serializers
 from django.contrib.auth import authenticate
 from rest_framework.permissions import AllowAny
 from .models import User
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 class RegistrationSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
@@ -23,7 +25,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
         validated_data.pop('confirm_password')
         email = validated_data.get('email')
 
-        # extract username from email
         username = email.split('@')[0]
 
         user = User.objects.create_user(
@@ -32,3 +33,28 @@ class RegistrationSerializer(serializers.ModelSerializer):
         )
 
         return user
+    
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+
+        user = authenticate(email=email, password=password)
+
+        if not user:
+            raise serializers.ValidationError("Invalid email or password")
+        
+        refresh = RefreshToken.for_user(user)
+
+        return {
+            'user': {
+                'id': user.id,
+                'name': user.name,
+                'email': user.email,
+            },
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
+        }
