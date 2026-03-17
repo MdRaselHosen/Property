@@ -1,23 +1,62 @@
-import React from 'react'
-
+import React, { useState, useEffect } from 'react'
+import SearchBar from '../components/SearchBar'
+import PropertyCard from '../components/PropertyCard'
+import axios from 'axios'
 
 const Home = () => {
+
+  const [properties, setProperties] = useState([])
+
+  const handleSearch = (query, filters) => {
+    console.log('Searching for:', query, filters)
+
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/properties/')
+        setProperties(response.data)
+      } catch (error) {
+        console.error('Error fetching properties:', error)
+      }
+    }
+
+    fetchProperties()
+  }, [])
+
   return (
     <div className='container my-5'>
+
       <div className='text-center mb-5'>
         <h1 className='display-4 mb-4'>
-            Welcome to Property sites
+          Welcome to Property Sites
         </h1>
-        <input className='' placeholder='Search Property' />
+
+        <SearchBar onSearch={handleSearch} />
       </div>
 
       <div className='row g-4'>
-        <div>
-            <h3>Properties</h3>
-        </div>
+
+        {properties.length > 0 ? (
+          properties.map((property) => (
+            <div key={property.id} className='col-md-6 col-lg-4'>
+              <PropertyCard property={property} />
+            </div>
+          ))
+        ) : (
+          <div className='col-12'>
+            <p className='text-center text-muted fs-5'>
+              No Properties available
+            </p>
+          </div>
+        )}
+
       </div>
+
     </div>
   )
 }
+}
 
-export default Home
+
+export default Home;
