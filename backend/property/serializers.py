@@ -17,9 +17,9 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PropertySerializers(serializers.ModelSerializer):
-    location = LocationSerializer(read_only=True)
-    images = PropertyImageSerializer(many=True, read_only=True)
-    reviews = ReviewSerializer(many=True, read_only=True)
+    location = LocationSerializer()
+    images = PropertyImageSerializer(many=True)
+    reviews = ReviewSerializer(many=True)
 
     class Meta:
         model = Property

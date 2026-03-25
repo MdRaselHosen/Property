@@ -1,4 +1,4 @@
-#!/Users/raselhosen/Documents/property/backend/propenv/bin/python
+#!/Users/raselhosen/Documents/property/backend/propenv/bin/python3.11
 # -*- coding: utf-8 -*-
 import re
 import sys
