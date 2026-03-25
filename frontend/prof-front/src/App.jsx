@@ -8,6 +8,7 @@ import Home from './pages/Home';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
+import AddProperty from './pages/AddProperty';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path='/login' element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/addproperty" element={<AddProperty />} />
           </Routes>
         </main>
         <Footer />

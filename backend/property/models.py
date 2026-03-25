@@ -28,7 +28,7 @@ class Location(models.Model):
     city = models.CharField(max_length=200)
     area = models.CharField(max_length=200)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
-    longtitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
 
     def __str__(self):
         return self.city
@@ -45,5 +45,5 @@ class Reviews(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.rating
+        return str(self.rating)
 

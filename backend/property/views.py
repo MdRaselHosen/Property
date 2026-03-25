@@ -12,5 +12,5 @@ class PropertyViewSet(ModelViewSet):
     queryset = Property.objects.all()
     serializer_class = PropertySerializers
     filter_backends = [SearchFilter]
-    search_fields = ['title', 'description','price']
+    search_fields = ['title', 'description','price','location__city']
 

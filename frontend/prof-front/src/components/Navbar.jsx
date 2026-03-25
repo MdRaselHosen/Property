@@ -32,7 +32,7 @@ const Navbar = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link">
+              <Link to="/addproperty" className="nav-link">
                 Add Property
               </Link>
             </li>
