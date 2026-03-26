@@ -33,13 +33,13 @@ class Location(models.Model):
 
 class PropertyImages(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='property_images/')
+    image = models.ImageField(upload_to='property_images/', null=True, blank=True)
 
 class Reviews(models.Model):
-    property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.DecimalField(max_digits=2, decimal_places=1)
-    comment = models.TextField()
+    rating = models.DecimalField(max_digits=2, decimal_places=1, null=True, blank=True)
+    comment = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

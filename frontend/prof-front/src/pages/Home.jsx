@@ -19,7 +19,6 @@ const Home = () => {
         const data = response.data.results || response.data;
 
         setProperties(data);
-        console.log("data:", data);
       } catch (error) {
         console.error("Error fetching properties:", error);
       }

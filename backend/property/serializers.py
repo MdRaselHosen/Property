@@ -4,23 +4,42 @@ from .models import *
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        fields = '__all__'
+        fields = ['city','area']
 
 class PropertyImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PropertyImages
-        fields = '__all__'
+        fields = ['image']
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reviews
-        fields = '__all__'
+        fields = ['rating', 'comment']
 
 class PropertySerializers(serializers.ModelSerializer):
     location = LocationSerializer()
-    images = PropertyImageSerializer(many=True)
-    reviews = ReviewSerializer(many=True)
+    images = PropertyImageSerializer(many=True,required=False)
+    reviews = ReviewSerializer(many=True, required=False)
 
     class Meta:
         model = Property
         fields = '__all__'
+
+    def create(self, validate_data):
+        location_data = validate_data.pop('location')
+        images_data = validate_data.pop('images',[])
+        reviews_data = validate_data.pop('reviews',[])
+
+        property_instance = Property.objects.create(**validate_data)
+
+        Location.objects.create(property=property_instance, **location_data)
+
+        for image in images_data:
+            PropertyImages.objects.create(property=property_instance, **self.images)
+
+        for review in reviews_data:
+            Reviews.objects.create(property=property_instance, **reviews_data)
+
+
+        return property_instance
+    

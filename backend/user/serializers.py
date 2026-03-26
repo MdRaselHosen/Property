@@ -23,14 +23,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         validated_data.pop('confirm_password')
-        email = validated_data.get('email')
+    
 
-        username = email.split('@')[0]
-
-        user = User.objects.create_user(
-            username=username,
-            **validated_data
-        )
+        user = User.objects.create_user(**validated_data)
 
         return user
     
