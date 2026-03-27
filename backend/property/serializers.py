@@ -24,6 +24,7 @@ class PropertySerializers(serializers.ModelSerializer):
     class Meta:
         model = Property
         fields = '__all__'
+        read_only_fields = ['owner']
 
     def create(self, validate_data):
         location_data = validate_data.pop('location')
@@ -35,10 +36,10 @@ class PropertySerializers(serializers.ModelSerializer):
         Location.objects.create(property=property_instance, **location_data)
 
         for image in images_data:
-            PropertyImages.objects.create(property=property_instance, **self.images)
+            PropertyImages.objects.create(property=property_instance, **image)
 
         for review in reviews_data:
-            Reviews.objects.create(property=property_instance, **reviews_data)
+            Reviews.objects.create(property=property_instance, **review)
 
 
         return property_instance

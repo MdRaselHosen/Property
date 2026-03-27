@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState,navigate } from "react";
+import api from "../services/api";
+
 
 const AddProperty = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    property_type: "",
-    status: "",
+    property_type: "house",
+    status: "sale",
     city: "",
     area: "",
     image: null,
@@ -14,13 +16,60 @@ const AddProperty = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({
+        ...prev,
+        [name]:value,
+    }));
   };
+
+  const handleViewMore = (propertyId) => {
+    const token = localStorage.getItem('access_token');
+
+    if (!token){
+        navigate("/login");
+    }else{
+        navigate(`/property/${propertyId}`);
+    }
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Adding property: ", formData);
-  };
+    
+    const data = new FormData();
+
+    data.append("title", formData.title);
+    data.append("description", formData.description);
+    data.append("property_type", formData.property_type);
+    data.append("status", formData.status);
+    data.append("price", formData.price);
+
+    data.append("location.city", formData.city);
+    data.append("location.area", formData.area);
+
+    if (formData.image){
+        data.append("image", formData.image);
+    }
+    const token = localStorage.getItem('access_token');
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    try{
+        const res = await api.post('property/',
+            data,
+            {
+                headers:{
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            console.log(res.data);
+            alert("Property added succesfully");
+       }catch(err){
+        console.error(err.response?.data);
+       }
+
+    }
+
   return (
     <div className="container my-5">
       <div className="row justify-content-center">
@@ -72,7 +121,7 @@ const AddProperty = () => {
             </div>
             <div className="mb-3">
               <label htmlFor="status" className="form-label">
-                Property Type
+                Status
               </label>
               <select
                 name="status"
@@ -93,17 +142,17 @@ const AddProperty = () => {
                 id="city"
                 name="city"
                 placeholder="City"
-                value={formData.location}
+                value={formData.city}
                 onChange={handleChange}
                 required
-              />
+              /><br />
               <input
                 type="text"
                 className="form-control"
                 id="area"
                 name="area"
                 placeholder="Area"
-                value={formData.location}
+                value={formData.area}
                 onChange={handleChange}
                 required
               />
