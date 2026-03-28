@@ -1,8 +1,10 @@
-import React, { useState,navigate } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 
 
 const AddProperty = () => {
+    const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -62,8 +64,9 @@ const AddProperty = () => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log(res.data);
+
             alert("Property added succesfully");
+            navigate("/property")
        }catch(err){
         console.error(err.response?.data);
        }

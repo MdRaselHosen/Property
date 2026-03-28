@@ -15,7 +15,7 @@ const Home = () => {
       try {
         const response = await api.get("property/");
         
-        // Handle both cases: paginated or non-paginated API
+        
         const data = response.data.results || response.data;
 
         setProperties(data);

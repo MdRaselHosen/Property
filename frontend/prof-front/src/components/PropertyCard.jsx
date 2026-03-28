@@ -1,7 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const PropertyCard = ({ property }) => {
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user'));
+  const token = localStorage.getItem('token');
   return (
     <div className="card h-100 shadow-sm">
       <img
@@ -19,7 +22,18 @@ const PropertyCard = ({ property }) => {
         <p className="card-text small text-muted">
           {property.location.area}, {property.location.city}
         </p>
-        <Link className="btn btn-primary btn-sm w-100">View Details</Link>
+        <Link
+          to={token || user ? `property/${property.id}` : "/login"}
+          className="btn btn-primary btn-sm w-100"
+        >
+        View Details
+        </Link>
+        {/* {user ? (
+          <Link to={`property/${property.id}`} className="btn btn-primary btn-sm w-100">View Details</Link>
+        ) : (
+          navigate('/login')
+        )} */}
+        
       </div>
     </div>
   );
