@@ -1,8 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropertyCard from "../components/PropertyCard";
+import api from "../services/api";
+import { useSearchParams } from "react-router-dom";
+import axios from "axios";
+
 
 const SearchResults = () => {
   const [results, setResults] = useState([]);
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get('q');
+
+  useEffect(() => {
+    if (query) {
+        api.get(`property/?search=${query}`)
+        .then((res) => {
+            setResults(res.data);
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+    }
+  },[query]);
 
   return (
     <div className="container my-5">

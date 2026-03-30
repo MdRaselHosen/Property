@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate
 from rest_framework.permissions import AllowAny
 from .models import User
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from property.serializers import PropertySerializers
 
 class RegistrationSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
@@ -53,3 +53,10 @@ class LoginSerializer(serializers.Serializer):
             'access': str(refresh.access_token),
             'refresh': str(refresh),
         }
+    
+class UserProfileSerializer(serializers.ModelSerializer):
+    properties = PropertySerializers(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username','email','properties']

@@ -43,4 +43,8 @@ class PropertySerializers(serializers.ModelSerializer):
 
 
         return property_instance
+
+
+
+
     

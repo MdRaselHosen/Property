@@ -1,14 +1,21 @@
-import React, { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
 
-const SearchBar = () => {
+import React, { useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+
+const SearchBar = ({ onSearch }) => {
+
+    const navigate = useNavigate();
 
     const [query, setQuery] = useState('');
     const [filters, setFilters] = useState({});
 
     const handleSearch = (e) => {
         e.preventDefault();
-        onSearch(query, filters);
+        if (onSearch) {
+            onSearch(query, filters);
+        }
+        navigate(`/search?q=${query}`);
+        
     };
     
   return (
