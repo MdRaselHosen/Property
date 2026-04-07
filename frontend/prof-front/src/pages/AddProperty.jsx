@@ -66,7 +66,7 @@ const AddProperty = () => {
             });
 
             alert("Property added succesfully");
-            navigate("/property")
+            navigate("/")
        }catch(err){
         console.error(err.response?.data);
        }

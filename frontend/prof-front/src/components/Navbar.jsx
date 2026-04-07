@@ -40,7 +40,7 @@ const Navbar = () => {
             </li>
             {user ? (
               <li className="nav-item">
-                <Link className="nav-link">
+                <Link className="nav-link" to="/user/:id">
                   Profile
                 </Link>
               </li>

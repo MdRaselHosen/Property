@@ -27,7 +27,7 @@ function App() {
             <Route path="/addproperty" element={<AddProperty />} />
             <Route path="/property/:id" element={<PropertyDetails />} />
             <Route path="/search" element={<SearchResults />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/user/:id" element={<Profile />} />
           </Routes>
         </main>
         <Footer />
