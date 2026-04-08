@@ -17,7 +17,7 @@ class Property(models.Model):
     price = models.DecimalField(max_digits=12,decimal_places=2, blank=False, null=False)
     property_type = models.CharField(max_length=20, choices=PropertyType.choices)
     status = models.CharField(max_length=20, choices=Status.choices)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='properties')
     created_at = models.DateTimeField(auto_now_add=True)
 
     latitude = models.FloatField(null=True, blank=True)

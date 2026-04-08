@@ -1,8 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+  
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
       <div className="container-fluid">
@@ -39,11 +47,18 @@ const Navbar = () => {
               <Link className="nav-link">Dashboard</Link>
             </li>
             {user ? (
-              <li className="nav-item">
-                <Link className="nav-link" to="/user/:id">
-                  Profile
-                </Link>
-              </li>
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to={`/user/${user.id}`}>
+                    Profile
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <button className="nav-link btn btn-link" onClick={handleLogout}>
+                    Logout
+                  </button>
+                </li>
+              </>
             ) : (
               <li className="nav-item">
                 <Link className="nav-link" to="/login">

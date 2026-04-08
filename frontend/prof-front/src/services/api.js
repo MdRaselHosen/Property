@@ -9,4 +9,22 @@ const api = axios.create({
     },
 });
 
+api.interceptors.request.use(
+    (config) => {
+        // Check both possible token keys for compatibility
+        const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+        
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+            console.log('✓ Token found and set:', token.substring(0, 20) + '...');
+        } else {
+            console.warn('⚠ No token in localStorage');
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
 export default api;
