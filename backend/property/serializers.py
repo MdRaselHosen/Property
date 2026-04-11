@@ -9,12 +9,24 @@ class LocationSerializer(serializers.ModelSerializer):
 class PropertyImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PropertyImages
-        fields = ['image']
+        fields = ['id', 'image']
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reviews
-        fields = ['rating', 'comment']
+        fields = ['id', 'rating', 'comment', 'created_at']
+        read_only_fields = ['created_at']
+    
+    def to_representation(self, instance):
+        """Override to include user info in response"""
+        ret = super().to_representation(instance)
+        ret['user'] = {
+            'id': instance.user.id,
+            'first_name': instance.user.first_name,
+            'last_name': instance.user.last_name,
+            'email': instance.user.email,
+        }
+        return ret
 
 class PropertySerializers(serializers.ModelSerializer):
     location = LocationSerializer()
