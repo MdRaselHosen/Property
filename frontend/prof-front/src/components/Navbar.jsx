@@ -1,16 +1,8 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
+
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
-  
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
       <div className="container-fluid">
@@ -52,11 +44,6 @@ const Navbar = () => {
                   <Link className="nav-link" to={`/user/${user.id}`}>
                     Profile
                   </Link>
-                </li>
-                <li className="nav-item">
-                  <button className="nav-link btn btn-link" onClick={handleLogout}>
-                    Logout
-                  </button>
                 </li>
               </>
             ) : (
