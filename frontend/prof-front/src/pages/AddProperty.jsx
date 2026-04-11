@@ -4,7 +4,7 @@ import api from "../services/api";
 
 
 const AddProperty = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -22,16 +22,6 @@ const AddProperty = () => {
         ...prev,
         [name]:value,
     }));
-  };
-
-  const handleViewMore = (propertyId) => {
-    const token = localStorage.getItem('access_token');
-
-    if (!token){
-        navigate("/login");
-    }else{
-        navigate(`/property/${propertyId}`);
-    }
   };
 
 

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -23,17 +24,13 @@ const Login = () => {
 
         try{
             setLoading(true);
-
-            const response = await api.post('user/login/', formData);
-            localStorage.setItem('access_token', response.data.access);
-            localStorage.setItem('refresh_token', response.data.refresh);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
-
+            // Use AuthContext's login function instead of direct API call
+            await login(formData.email, formData.password);
             alert("Login Successful");
             navigate('/')
 
         }catch(error){
-            console.error(error.response?.data);
+            console.error(error.response?.data || error);
             setErrors(error.response?.data || {});
         }finally{
             setLoading(false);
