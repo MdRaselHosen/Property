@@ -11,14 +11,16 @@ const api = axios.create({
 
 api.interceptors.request.use(
     (config) => {
-        // Check both possible token keys for compatibility
+
         const token = localStorage.getItem('token') || localStorage.getItem('access_token');
+
+        const isAuthEndpoint = config.url.includes('login') || config.url.includes('register');
         
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
-            console.log('✓ Token found and set:', token.substring(0, 20) + '...');
-        } else {
-            console.warn('⚠ No token in localStorage');
+            console.log('Token found and set:', token.substring(0, 20) + '...');
+        } else if (!isAuthEndpoint) {
+            console.warn('No token in localStorage');
         }
         return config;
     },
