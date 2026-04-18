@@ -12,6 +12,7 @@ const PropertyDetails = () => {
   const [newComment, setNewComment] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [rating, setRating] = useState(5);
 
   useEffect(() => {
     fetchProperty();
@@ -34,8 +35,8 @@ const PropertyDetails = () => {
 
       try {
         const commentsRes = await api.get(`property/${id}/reviews/`);
-        const sortedComments = commentsRes.data.sort((a, b) => 
-          new Date(b.created_at) - new Date(a.created_at)
+        const sortedComments = commentsRes.data.sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at),
         );
         setComments(sortedComments);
       } catch (error) {
@@ -53,17 +54,22 @@ const PropertyDetails = () => {
 
   const handleAddComment = async (e) => {
     e.preventDefault();
-    if (!newComment.trim() || !user) return;
+    if (!newComment.trim() || !user || rating === 0) {
+      alert("Please select a rating and write a comment");
+      return;
+    }
 
     try {
       const res = await api.post(`property/${id}/reviews/`, {
         comment: newComment,
-        rating: 5,
+        rating: rating,
       });
-      setComments([...comments, res.data]);
+      setComments([res.data, ...comments]);
       setNewComment("");
+      setRating(0);
     } catch (error) {
       console.error("Can't post comment ", error);
+      alert("Error posting review. Please try again.");
     }
   };
 
@@ -97,11 +103,8 @@ const PropertyDetails = () => {
         {property ? (
           <>
             <div className="row mb-5">
-              {/* Images Section */}
               <div className="col-md-8">
                 <h1 className="mb-4">{property.title}</h1>
-
-                {/* Image Carousel */}
                 <div className="position-relative mb-4">
                   {currentImage ? (
                     <img
@@ -277,6 +280,27 @@ const PropertyDetails = () => {
                       <h5 className="card-title">Leave a Review</h5>
                       <form onSubmit={handleAddComment}>
                         <div className="mb-3">
+                          <label className="form-label">Rating</label>
+                          <div style={{ fontSize: "28px", cursor: "pointer", marginBottom: "15px" }}>
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <span
+                                key={star}
+                                onClick={() => setRating(star)}
+                                style={{
+                                  color: star <= rating ? "#ffc107" : "#e4e5e9",
+                                  marginRight: "5px",
+                                  transition: "color 0.2s"
+                                }}
+                              >
+                                ★
+                              </span>
+                            ))}
+                          </div>
+                          <small className="text-muted">
+                            {rating > 0 ? `You rated: ${rating} star${rating > 1 ? 's' : ''}` : 'Click to rate'}
+                          </small>
+                        </div>
+                        <div className="mb-3">
                           <textarea
                             className="form-control"
                             rows="4"
@@ -315,8 +339,11 @@ const PropertyDetails = () => {
                                 ).toLocaleDateString()}
                               </small>
                             </div>
-                            <div className="text-warning">
-                              {"⭐".repeat(comment.rating || 5)}
+                            <div>
+                              <div style={{ fontSize: "18px", color: "#ffc107" }}>
+                                {"★".repeat(comment.rating || 5)}
+                                {"☆".repeat(5 - (comment.rating || 5))}
+                              </div>
                             </div>
                           </div>
                           <p className="card-text">{comment.comment}</p>
