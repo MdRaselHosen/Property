@@ -7,7 +7,9 @@ const PropertyDetails = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const [property, setProperty] = useState(null);
-  const [owner, SetOwner] = useState(null);
+  const [owner, setOwner] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -20,14 +22,25 @@ const PropertyDetails = () => {
       setLoading(true);
       const res = await api.get(`property/${id}/`);
       setProperty(res.data);
-
-      if (res.data.owner) {
+      
+      if(res.data.owner) {
         try {
           const ownerRes = await api.get(`user/${res.data.owner}/`);
-          SetOwner(ownerRes.data);
+          setOwner(ownerRes.data);
         } catch (error) {
           console.error("Can't get owner info", error);
         }
+      }
+      
+
+      try{
+        const commentsRes = await api.get(`property/${id}/reviews/`);
+        setComments(commentsRes.data);
+      } catch (error){
+        console.error("Can't get reviews", error);
+        setComments([]);
+      }finally{
+        setLoading(false);
       }
     } catch (error) {
       console.log("Can't get Property ", error);
@@ -36,19 +49,35 @@ const PropertyDetails = () => {
     }
   };
 
+  const handleAddComment = async (e) => {
+    e.preventDefault();
+    if (!newComment.trim() || !user) return;
+
+    try{
+      const res = await api.post(`property/${id}/reviews/`, {
+        comment: newComment,
+        rating: 5
+      });
+      setComments([...comments, res.data]);
+      setNewComment("");
+    } catch (error){
+      console.error("Can't post comment ", error);
+    }
+  }
+
   const handlePrevImage = () => {
     if (property?.images && property.images.length > 0) {
-      setCurrentImageIndex((prev) =>
-        prev === 0 ? property.images.length - 1 : prev - 1,
+      setCurrentImageIndex((prev) => 
+        prev === 0 ? property.images.length - 1 : prev - 1
       );
     }
   };
 
   const handleNextImage = () => {
     if (property?.images && property.images.length > 0) {
-      setCurrentImageIndex((prev) => 
-      prev === property.images.length - 1 ? 0 : prev + 1
-    );
+      setCurrentImageIndex((prev) =>
+        prev === property.images.length - 1 ? 0 : prev + 1
+      );
     }
   }
 
@@ -66,30 +95,28 @@ const PropertyDetails = () => {
         {property ? (
           <>
             <div className="row mb-5">
+              {/* Images Section */}
               <div className="col-md-8">
                 <h1 className="mb-4">{property.title}</h1>
-
+                
+                {/* Image Carousel */}
                 <div className="position-relative mb-4">
                   {currentImage ? (
                     <img
                       src={currentImage.image}
                       alt={property.title}
                       className="img-fluid rounded"
-                      style={{
-                        height: "400px",
-                        objectFit: "cover",
-                        width: "100%",
-                      }}
+                      style={{ height: "400px", objectFit: "cover", width: "100%" }}
                     />
                   ) : (
                     <div className="bg-light rounded p-5 text-center">
                       <p>No images available</p>
                     </div>
                   )}
-
+                  
                   {property.images && property.images.length > 1 && (
                     <>
-                      <button 
+                      <button
                         onClick={handlePrevImage}
                         className="btn btn-light position-absolute top-50 start-0 translate-middle-y ms-2"
                         style={{ zIndex: 10}}
@@ -110,7 +137,7 @@ const PropertyDetails = () => {
                 {property.images && property.images.length > 1 && (
                   <div className="d-flex gap-2 mb-4 overflow-auto">
                     {property.images.map((img, idx) => (
-                      <img 
+                      <img
                         key={idx}
                         src={img.image}
                         alt={`Thumbnail ${idx + 1}`}
@@ -144,7 +171,7 @@ const PropertyDetails = () => {
                     <div className="col-md-6">
                       <p className="fs-5">
                         <strong>Type: </strong>
-                        <span className="badge bg-info">{property.property_type || "Not Specific"}</span>
+                        <span className="badge bg-info">{property.property_type || "Not specified"}</span>
                       </p>
                     </div>
                   </div>
@@ -168,7 +195,6 @@ const PropertyDetails = () => {
                           style={{width: "60px", height:"60px", display:"flex", alignItems:"center", justifyContent:"center"}}>
                           
                           {owner.first_name?.charAt(0) || owner.email?.charAt(0)}
-
                         </div>
                         <div>
                           <h6 className="mb-0">{owner.first_name} {owner.last_name}</h6>
@@ -220,6 +246,39 @@ const PropertyDetails = () => {
                   </div>
                 )}
               </div>
+            </div>
+            <div className="row mt-5">
+              <div className="col-md-4">
+                <h3 className="mb-4">Reviews and Comments</h3>
+                {user ? (
+                  <div className="card mb-4">
+                    <div className="card-body">
+                      <h5 className="card-title">Leave a Review</h5>
+                      <form onSubmit={handleAddComment}>
+                        <div className="mb-3">
+                          <textarea
+                            className="form-control"
+                            rows="4"
+                            placeholder="Share your opinion"
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                            required
+                          ></textarea>
+                        </div>
+                        <button type="submit" className="btn btn-primary">
+                          Post Review
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="alert alert-info mb-4">
+                    Please <a href="/login">login</a> to leave a review and comment.
+                  </div>
+                )}
+                
+              </div>
+
             </div>
           </>
         ) : (
