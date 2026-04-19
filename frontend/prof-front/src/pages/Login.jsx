@@ -3,39 +3,38 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
-    const navigate = useNavigate();
-    const { login } = useAuth();
-    const [formData, setFormData] = useState({
-        email: '',
-        password: ''
-    });
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-    const [loading, setLoading] = useState(false);
-    const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]:value});
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setErrors({});
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({});
 
-        try{
-            setLoading(true);
-            // Use AuthContext's login function instead of direct API call
-            await login(formData.email, formData.password);
-            alert("Login Successful");
-            navigate('/')
-
-        }catch(error){
-            console.error(error.response?.data || error);
-            setErrors(error.response?.data || {});
-        }finally{
-            setLoading(false);
-        }
+    try {
+      setLoading(true);
+      // Use AuthContext's login function instead of direct API call
+      await login(formData.email, formData.password);
+      alert("Login Successful");
+      navigate("/");
+    } catch (error) {
+      console.error(error.response?.data || error);
+      setErrors(error.response?.data || {});
+    } finally {
+      setLoading(false);
     }
+  };
 
   return (
     <div className="container my-5">
@@ -77,6 +76,24 @@ const Login = () => {
                   Login
                 </button>
               </form>
+              <div className="my-3">
+                <div className="d-flex align-items-center mb-3">
+                  <hr className="flex-grow-1" />
+                  <span className="mx-2 text-muted">OR</span>
+                  <hr className="flex-grow-1" />
+                </div>
+                <a
+                  href="http://localhost:8000/accounts/google/login/"
+                  className="btn btn-light w-100 border"
+                >
+                  <img
+                    src="https://www.gstatic.com/images/branding/product/1x/googleg_standard_color_128dp.png"
+                    alt="Google"
+                    style={{ height: "20px", marginRight: "10px" }}
+                  />
+                  Login with Google
+                </a>
+              </div>
               <p className="text-center mt-3">
                 Don't have an account?{" "}
                 <Link to="/register" className="text-decoration-none">
